@@ -9,6 +9,6 @@ type Registry interface {
 	Service(name string) (*Service, bool)
 }
 
-var (
-	DefaultRegistry = newConsul()
-)
+//var (
+//	DefaultRegistry = newConsul()
+//)

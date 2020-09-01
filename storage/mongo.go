@@ -43,7 +43,7 @@ func (this *mongo) Init(opt ...MongoOption) error {
 		}
 
 		Mongo.session.SetMode(mgo.Monotonic, true)
-		Mongo.options.logger.Info("Mongo inited.")
+		Mongo.options.logger.Info("Mongo","Mongo inited.")
 	})
 	return err
 }

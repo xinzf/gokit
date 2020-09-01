@@ -36,7 +36,7 @@ func (this *_redis) Init(opt ...RedisOption) error {
 			err = errors.New("redis connect failed,err: " + err.Error())
 			return
 		}
-		Redis.options.Logger.Info("Redis inited.")
+		Redis.options.Logger.Info("Redis","Redis inited.")
 	})
 
 	return err

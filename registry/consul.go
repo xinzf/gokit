@@ -22,7 +22,7 @@ type _consulRegistry struct {
 	once sync.Once
 }
 
-func newConsul(opt ...Option) Registry {
+func NewConsul(opt ...Option) Registry {
 	consul := &_consulRegistry{
 		options:  newOptions(opt...),
 		services: map[string][]*Service{},

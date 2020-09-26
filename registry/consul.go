@@ -34,6 +34,7 @@ func NewConsul(opt ...Option) Registry {
 		panic(err)
 	}
 
+	DefaultRegistry = consul
 	return consul
 }
 
@@ -75,7 +76,12 @@ func (this *_consulRegistry) Deregister(id string) error {
 	return this.client.Agent().ServiceDeregister(id)
 }
 
-func (this *_consulRegistry) Watch() {
+func (this *_consulRegistry) Watch() error {
+	if err := this.loadServices(); err != nil {
+		this.connected = false
+		return err
+	}
+
 	this.once.Do(func() {
 		go func() {
 			ticker := time.NewTicker(3 * time.Second)
@@ -95,6 +101,8 @@ func (this *_consulRegistry) Watch() {
 			}
 		}()
 	})
+
+	return nil
 }
 
 func (this *_consulRegistry) connect() error {

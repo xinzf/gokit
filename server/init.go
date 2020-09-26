@@ -1,7 +1,9 @@
 package server
 
 import (
-    "os"
+	nettools "github.com/toolkits/net"
+	"log"
+	"os"
 )
 
 var (
@@ -15,14 +17,14 @@ var (
 
 func init() {
 	Server = new(server)
-	//ips, err := nettools.IntranetIP()
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-	//if len(ips) == 0 {
-	//	log.Fatalln("cant't get local ip")
-	//}
-	//localIP = ips[0]
+	ips, err := nettools.IntranetIP()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if len(ips) == 0 {
+		log.Fatalln("cant't get local ip")
+	}
+	localIP = ips[0]
 
 	hostName, _ = os.Hostname()
 }

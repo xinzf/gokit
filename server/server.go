@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/xinzf/gokit/registry"
-    "mime/multipart"
-    "net/http"
+	"mime/multipart"
+	"net/http"
 	"os"
 	"os/signal"
 	"reflect"
@@ -28,12 +29,23 @@ func New(opt ...Option) {
 
 	opts := newOptions(opt...)
 
+	config := cors.DefaultConfig()
+	if opts.allowAllOrigins == true {
+		config.AllowAllOrigins = true
+	}
+	if len(opts.allowHeaders) > 0 {
+		config.AddAllowHeaders(opts.allowHeaders...)
+	}
+
+	e := gin.New()
+	e.Use(gin.Recovery(), gin.Logger(), cors.New(config))
+
 	srv = &server{
 		id:       fmt.Sprintf("%s-%s-%d", hostName, opts.name, time.Now().UnixNano()),
 		options:  newOptions(opt...),
 		handlers: map[string]map[string]*Method{},
 		metaData: map[string]string{},
-		g:        gin.New(),
+		g:        e,
 	}
 }
 
@@ -182,9 +194,9 @@ func (this *server) errHandler(err error, code ...int) interface{} {
 //}
 
 type UploadFile struct {
-    UploadKey *multipart.FileHeader `form:"upload-key"`
-    Name      string                `form:"name"`
-    Age       int                   `form:"age"`
+	UploadKey *multipart.FileHeader `form:"upload-key"`
+	Name      string                `form:"name"`
+	Age       int                   `form:"age"`
 }
 
 func (this *server) call(ctx *gin.Context) {

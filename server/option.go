@@ -9,15 +9,20 @@ import (
 )
 
 type Options struct {
-	name     string
-	host     string
-	port     int
-	registry registry.Registry
-	logger   logger.Logger
+	name            string
+	host            string
+	port            int
+	registry        registry.Registry
+	logger          logger.Logger
+	allowAllOrigins bool
+	allowHeaders    []string
 }
 
 func newOptions(opt ...Option) Options {
 	var opts Options
+	if opts.allowHeaders == nil {
+		opts.allowHeaders = make([]string, 0)
+	}
 
 	if len(opt) > 0 {
 		for _, o := range opt {
@@ -75,5 +80,20 @@ func Registry(r registry.Registry) Option {
 func Logger(logger logger.Logger) Option {
 	return func(options *Options) {
 		options.logger = logger
+	}
+}
+
+func AllowAllOrigins() Option {
+	return func(options *Options) {
+		options.allowAllOrigins = true
+	}
+}
+
+func AllowHeaders(headerName ...string) Option {
+	return func(options *Options) {
+		if options.allowHeaders == nil {
+			options.allowHeaders = make([]string, 0)
+		}
+		options.allowHeaders = append(options.allowHeaders, headerName...)
 	}
 }

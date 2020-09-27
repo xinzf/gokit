@@ -1,14 +1,13 @@
 package registry
 
 import (
-	"context"
 	"time"
 )
 
 type Options struct {
-	Addrs    []string
-	Timeout  time.Duration
-	Context  context.Context
+	Addrs   []string
+	Timeout time.Duration
+	//Context  context.Context
 	Interval time.Duration
 }
 
@@ -18,7 +17,6 @@ func newOptions(opt ...Option) Options {
 	opts := Options{
 		Addrs:    []string{"http://127.0.0.1:8500"},
 		Timeout:  3 * time.Second,
-		Context:  context.Background(),
 		Interval: 5 * time.Second,
 	}
 
@@ -50,8 +48,8 @@ func Interval(t time.Duration) Option {
 	}
 }
 
-func Context(ctx context.Context) Option {
-	return func(o *Options) {
-		o.Context = ctx
-	}
-}
+//func Context(ctx context.Context) Option {
+//	return func(o *Options) {
+//		o.Context = ctx
+//	}
+//}

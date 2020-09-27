@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/hashicorp/consul/api"
@@ -19,7 +20,8 @@ type _consulRegistry struct {
 	connected bool
 
 	sync.RWMutex
-	once sync.Once
+	once    sync.Once
+	isWatch bool
 }
 
 func NewConsul(opt ...Option) Registry {
@@ -76,11 +78,12 @@ func (this *_consulRegistry) Deregister(id string) error {
 	return this.client.Agent().ServiceDeregister(id)
 }
 
-func (this *_consulRegistry) Watch() error {
+func (this *_consulRegistry) Watch(ctx context.Context) error {
 	if err := this.loadServices(); err != nil {
 		this.connected = false
 		return err
 	}
+	this.isWatch = true
 
 	this.once.Do(func() {
 		go func() {
@@ -95,7 +98,7 @@ func (this *_consulRegistry) Watch() error {
 					if err := this.loadServices(); err != nil {
 						this.connected = false
 					}
-				case <-this.options.Context.Done():
+				case <-ctx.Done():
 					return
 				}
 			}
@@ -197,8 +200,11 @@ func (this *_consulRegistry) loadServices() error {
 }
 
 func (this *_consulRegistry) Services() map[string][]*Service {
-	this.RLock()
+	if !this.isWatch {
+		this.loadServices()
+	}
 	defer this.RUnlock()
+	this.RLock()
 	return this.services
 }
 

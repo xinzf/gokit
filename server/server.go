@@ -30,12 +30,8 @@ func New(opt ...Option) {
 	opts := newOptions(opt...)
 
 	config := cors.DefaultConfig()
-	if opts.allowAllOrigins == true {
-		config.AllowAllOrigins = true
-	}
-	if len(opts.allowHeaders) > 0 {
-		config.AddAllowHeaders(opts.allowHeaders...)
-	}
+	config.AllowAllOrigins = true
+	config.AddAllowHeaders(opts.allowHeaders...)
 
 	e := gin.New()
 	e.Use(gin.Recovery(), gin.Logger(), cors.New(config))

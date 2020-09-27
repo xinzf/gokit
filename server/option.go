@@ -9,13 +9,12 @@ import (
 )
 
 type Options struct {
-	name            string
-	host            string
-	port            int
-	registry        registry.Registry
-	logger          logger.Logger
-	allowAllOrigins bool
-	allowHeaders    []string
+	name         string
+	host         string
+	port         int
+	registry     registry.Registry
+	logger       logger.Logger
+	allowHeaders []string
 }
 
 func newOptions(opt ...Option) Options {
@@ -80,12 +79,6 @@ func Registry(r registry.Registry) Option {
 func Logger(logger logger.Logger) Option {
 	return func(options *Options) {
 		options.logger = logger
-	}
-}
-
-func AllowAllOrigins() Option {
-	return func(options *Options) {
-		options.allowAllOrigins = true
 	}
 }
 

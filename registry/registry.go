@@ -16,7 +16,7 @@ type Registry interface {
 
 type Watcher interface {
 	Add(path string, hdl func(result *Result))
-	Remove(path string)
+	Remove(path ...string)
 	Shutdown()
 	Run()
 }
@@ -25,6 +25,7 @@ type Result struct {
 	Path        string
 	Value       []byte
 	ModifyIndex uint64
+	Event       string
 }
 
 func (this *Result) String() string {

@@ -6,17 +6,17 @@ import (
 )
 
 var (
-    GORM_JSON_FIELD bool = false
+	GORM_JSON_FIELD bool = false
 )
 
 type GormStrings []string
 
 func (static GormStrings) Value() (driver.Value, error) {
-    if GORM_JSON_FIELD {
-        return jsoniter.MarshalToString(static)
-    }else{
-        return jsoniter.Marshal(static)
-    }
+	if GORM_JSON_FIELD {
+		return jsoniter.MarshalToString(static)
+	} else {
+		return jsoniter.Marshal(static)
+	}
 }
 
 func (this *GormStrings) Scan(v interface{}) error {
@@ -32,11 +32,11 @@ func (this *GormStrings) Scan(v interface{}) error {
 type GormInts []int
 
 func (static GormInts) Value() (driver.Value, error) {
-    if GORM_JSON_FIELD {
-        return jsoniter.MarshalToString(static)
-    }else{
-        return jsoniter.Marshal(static)
-    }
+	if GORM_JSON_FIELD {
+		return jsoniter.MarshalToString(static)
+	} else {
+		return jsoniter.Marshal(static)
+	}
 }
 
 func (this *GormInts) Scan(v interface{}) error {
@@ -52,11 +52,11 @@ func (this *GormInts) Scan(v interface{}) error {
 type GormInt64s []int64
 
 func (static GormInt64s) Value() (driver.Value, error) {
-    if GORM_JSON_FIELD {
-        return jsoniter.MarshalToString(static)
-    }else{
-        return jsoniter.Marshal(static)
-    }
+	if GORM_JSON_FIELD {
+		return jsoniter.MarshalToString(static)
+	} else {
+		return jsoniter.Marshal(static)
+	}
 }
 
 func (this *GormInt64s) Scan(v interface{}) error {
@@ -72,11 +72,11 @@ func (this *GormInt64s) Scan(v interface{}) error {
 type GormFloat64s []float64
 
 func (static GormFloat64s) Value() (driver.Value, error) {
-    if GORM_JSON_FIELD {
-        return jsoniter.MarshalToString(static)
-    }else{
-        return jsoniter.Marshal(static)
-    }
+	if GORM_JSON_FIELD {
+		return jsoniter.MarshalToString(static)
+	} else {
+		return jsoniter.Marshal(static)
+	}
 }
 
 func (this *GormFloat64s) Scan(v interface{}) error {
@@ -92,11 +92,11 @@ func (this *GormFloat64s) Scan(v interface{}) error {
 type GormMap map[string]interface{}
 
 func (static GormMap) Value() (driver.Value, error) {
-    if GORM_JSON_FIELD {
-        return jsoniter.MarshalToString(static)
-    }else{
-        return jsoniter.Marshal(static)
-    }
+	if GORM_JSON_FIELD {
+		return jsoniter.MarshalToString(static)
+	} else {
+		return jsoniter.Marshal(static)
+	}
 }
 
 func (this *GormMap) Scan(v interface{}) error {
@@ -112,11 +112,11 @@ func (this *GormMap) Scan(v interface{}) error {
 type GormMapString map[string]string
 
 func (static GormMapString) Value() (driver.Value, error) {
-    if GORM_JSON_FIELD {
-        return jsoniter.MarshalToString(static)
-    }else{
-        return jsoniter.Marshal(static)
-    }
+	if GORM_JSON_FIELD {
+		return jsoniter.MarshalToString(static)
+	} else {
+		return jsoniter.Marshal(static)
+	}
 }
 
 func (this *GormMapString) Scan(v interface{}) error {

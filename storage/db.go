@@ -85,18 +85,18 @@ func (db *database) Init(opts ...DbOption) error {
 		}
 
 		DB.connection = d
-		DB.options.logger.Info("Mysql","DB inited.")
+		DB.options.logger.Info("Mysql", "DB inited.")
 
 		go func() {
 			defer func() {
-				logger.DefaultLogger.Debug("Mysql","db exit.")
+				logger.DefaultLogger.Debug("Mysql", "db exit.")
 			}()
 			for {
-				time.Sleep(10*time.Second)
+				time.Sleep(10 * time.Second)
 				if err := DB.connection.DB().Ping(); err != nil {
 					logger.DefaultLogger.Error(err)
 				} else {
-					logger.DefaultLogger.Info("Mysql","db ping")
+					logger.DefaultLogger.Info("Mysql", "db ping")
 				}
 			}
 		}()

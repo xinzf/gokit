@@ -100,7 +100,7 @@ func Run(ctx context.Context, initFn ...Initialization) {
 func (this *server) serve(addr string) {
 	this.options.logger.Info(fmt.Sprintf("server listen: %s", fmt.Sprintf("%s:%d", this.options.host, this.options.port)))
 
-	this.g.Use(gin.Recovery(), gin.Logger())
+	this.g.Use(gin.Recovery())
 
 	this.g.NoRoute(this.call)
 

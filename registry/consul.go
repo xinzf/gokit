@@ -60,7 +60,7 @@ func (this *_consulRegistry) Register(svc *Service) error {
 		Check: &api.AgentServiceCheck{
 			Interval:                       this.options.Interval.String(),
 			Timeout:                        this.options.Timeout.String(),
-			HTTP:                           svc.Addr(),
+			HTTP:                           svc.Domain(),
 			Method:                         "HEAD",
 			Notes:                          fmt.Sprintf("Check server: %s", svc.Name),
 			DeregisterCriticalServiceAfter: "10s",

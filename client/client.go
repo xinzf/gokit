@@ -31,7 +31,7 @@ var (
 func New(r reg.Registry) {
 	once.Do(func() {
 
-		r.Watch()
+		//r.Watch()
 		registry = r
 
 		var transport = &http.Transport{
@@ -61,26 +61,29 @@ func New(r reg.Registry) {
 	})
 }
 
-func Call(serviceName string, body interface{}, rsp interface{}, headers ...map[string]interface{}) (err error) {
+func Call(serviceName string, body interface{}, method string, rsp interface{}, headers ...map[string]interface{}) (err error) {
 	if registry == nil {
 		return errors.New("client have not registry")
 	}
 
+	var (
+		svcName, hdlName string
+	)
+
 	strs := strings.Split(serviceName, ".")
-	if len(strs) < 3 {
+	if len(strs) < 1 {
 		return callServiceErr(serviceName, "service name is wrong")
 	}
 
-	svcName := strs[0]
-	hdlName := strings.Join(strs[1:len(strs)-1], ".")
-	methodName := strs[len(strs)-1:][0]
+	svcName = strs[0]
+	hdlName = strings.Join(strs[1:], ".")
 
 	svc, found := registry.Service(svcName)
 	if !found {
 		return fmt.Errorf("Not found service: %s\n", serviceName)
 	}
 
-	address := svc.Method(hdlName, methodName)
+	address := svc.URL(hdlName)
 	data, err := jsoniter.Marshal(body)
 	if err != nil {
 		return callServiceErr(serviceName, err.Error())
@@ -90,7 +93,7 @@ func Call(serviceName string, body interface{}, rsp interface{}, headers ...map[
 	if len(data) > 0 {
 		reqBody = bytes.NewBuffer(data)
 	}
-	req, _ := http.NewRequest("post", address, reqBody)
+	req, _ := http.NewRequest(method, address, reqBody)
 
 	mp := make(map[string]string)
 	if len(headers) > 0 {

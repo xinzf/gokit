@@ -17,6 +17,9 @@ type Registry interface {
 type Watcher interface {
 	Add(path string, hdl func(result *Result))
 	Remove(path ...string)
+	Check(path string) bool
+	Watchers() []string
+	StopAll()
 	Shutdown()
 	Run()
 }

@@ -192,6 +192,25 @@ func (this *ConsulWatcher) Add(path string, hdl func(result *Result)) {
 	go this.watchers[path].run(this.ctx, this.stopChan)
 }
 
+func (this *ConsulWatcher) StopAll() {
+	for _, w := range this.watchers {
+		w.stop()
+	}
+}
+
+func (this *ConsulWatcher) Watchers() []string {
+	strs := make([]string, 0)
+	for path, _ := range this.watchers {
+		strs = append(strs, path)
+	}
+	return strs
+}
+
+func (this *ConsulWatcher) Check(path string) bool {
+	_, found := this.watchers[path]
+	return found
+}
+
 func (this *ConsulWatcher) Remove(key ...string) {
 	path := strings.TrimPrefix(strings.TrimSuffix(strings.Join(key, "/"), "/"), "/")
 	watcher, found := this.watchers[path]

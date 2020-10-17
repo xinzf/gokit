@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/json-iterator/go"
 	"reflect"
 	"strings"
@@ -78,6 +79,34 @@ func newMethod(hdlName, methodName string, methodVal reflect.Value) (*Method, er
 	return m, nil
 }
 
+func (this *Method) CallUpload(c context.Context, ctx *gin.Context) (interface{}, error) {
+	if this.in.reqTpy.String() != "*server.UploadFile" {
+		return nil, fmt.Errorf("the request argument of %s.%s is not *server.UploadFile", this.hdlName, this.methodName)
+	}
+
+	uploadFile := &UploadFile{ctx: ctx}
+
+	var rspVal reflect.Value
+	rspVal = reflect.New(this.in.rspTpy.Elem())
+	values := make([]reflect.Value, 0)
+	if this.in.num == 2 {
+		values = this.hdl.Call([]reflect.Value{
+			reflect.ValueOf(uploadFile),
+			rspVal,
+		})
+	} else {
+		values = this.hdl.Call([]reflect.Value{
+			reflect.ValueOf(c),
+			reflect.ValueOf(uploadFile),
+			rspVal,
+		})
+	}
+
+	er, _ := values[0].Interface().(error)
+	rsp := rspVal.Convert(this.in.rspTpy)
+	return rsp.Interface(), er
+}
+
 func (this *Method) Call(ctx context.Context, rawData []byte) (interface{}, error) {
 
 	var reqVal reflect.Value
@@ -94,11 +123,7 @@ func (this *Method) Call(ctx context.Context, rawData []byte) (interface{}, erro
 	}
 
 	var rspVal reflect.Value
-	//if this.in.rspTpy.Kind() == reflect.Interface {
-	//    rspVal = reflect.New(this.in.rspTpy)
-	//}else{
 	rspVal = reflect.New(this.in.rspTpy.Elem())
-	//}
 	values := make([]reflect.Value, 0)
 	if this.in.num == 2 {
 		values = this.hdl.Call([]reflect.Value{

@@ -7,7 +7,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/xinzf/gokit/registry"
-	"mime/multipart"
 	"net/http"
 	"os"
 	"os/signal"
@@ -174,27 +173,6 @@ func (this *server) errHandler(err error, code ...int) interface{} {
 	return mp
 }
 
-//func (this *server) loggerHandler() gin.HandlerFunc {
-//	return func(ctx *gin.Context) {
-//		c := ctx.Copy()
-//		defer c.Request.Body.Close()
-//		body, _ := ioutil.ReadAll(c.Request.Body)
-//
-//		ctx.Next()
-//
-//		var output interface{}
-//		jsoniter.Unmarshal(body,&output)
-//		Logger.Info("Request body: ",output)
-//	}
-//	//}
-//}
-
-type UploadFile struct {
-	UploadKey *multipart.FileHeader `form:"upload-key"`
-	Name      string                `form:"name"`
-	Age       int                   `form:"age"`
-}
-
 func (this *server) call(ctx *gin.Context) {
 
 	if ctx.Request.Method == http.MethodHead {
@@ -231,20 +209,21 @@ func (this *server) call(ctx *gin.Context) {
 	)
 	rawData = make([]byte, 0)
 
+	var rsp interface{}
+	c := context.WithValue(context.Background(), ReqMetaDataKey, ctx.Request.Header)
 	if ctx.ContentType() == gin.MIMEJSON {
 		rawData, err = ctx.GetRawData()
 		if err != nil {
 			ctx.JSON(200, this.errHandler(fmt.Errorf("failed to get request data,err: %s", err.Error())))
 			return
 		}
+		rsp, err = fn.Call(c, rawData)
+	} else if ctx.ContentType() == gin.MIMEMultipartPOSTForm {
+		rsp, err = fn.CallUpload(c, ctx)
 	}
-
-	c := context.WithValue(context.Background(), ReqMetaDataKey, ctx.Request.Header)
-	rsp, err := fn.Call(c, rawData)
 	if err != nil {
 		ctx.JSON(200, this.errHandler(err))
 		return
 	}
-
 	ctx.JSON(200, rsp)
 }

@@ -9,10 +9,8 @@ require (
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026
 	github.com/hashicorp/consul/api v1.7.0
-	github.com/jinzhu/gorm v1.9.16
 	github.com/json-iterator/go v1.1.10
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.3 // indirect
@@ -22,4 +20,6 @@ require (
 	go.uber.org/zap v1.16.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/gorm v1.20.5
 )

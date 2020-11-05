@@ -38,6 +38,10 @@ func newZapLogger(opt ...Option) Logger {
 	return logger
 }
 
+func NewZapLogger(opt ...Option) Logger {
+	return newZapLogger(opt...)
+}
+
 func (l *zapLogger) Init(opt ...Option) {
 
 	if len(opt) > 0 {

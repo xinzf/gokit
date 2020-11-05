@@ -10,22 +10,26 @@ type DbOptions struct {
 	User         string
 	Pswd         string
 	Name         string
+	Port         int
 	Log          bool
 	MaxIdleConns int
 	MaxOpenConns int
 	logger       logger.Logger
 	initSql      []string
+	DBType       string
 }
 
 type DbOption func(o *DbOptions)
 
 func newDbOptions(opt ...DbOption) DbOptions {
 	opts := DbOptions{
-		Addr:         "127.0.0.1:3307",
+		Addr:         "127.0.0.1",
+		Port:         3306,
 		User:         "root",
 		MaxIdleConns: 20,
 		MaxOpenConns: 20,
 		initSql:      []string{},
+		DBType:       "mysql",
 	}
 
 	if len(opt) > 0 {
@@ -36,9 +40,11 @@ func newDbOptions(opt ...DbOption) DbOptions {
 	return opts
 }
 
-func DbConfig(addr, user, pswd, name string) DbOption {
+func DbConfig(dbType string, addr string, port int, user, pswd, name string) DbOption {
 	return func(o *DbOptions) {
+		o.DBType = dbType
 		o.Addr = addr
+		o.Port = port
 		o.User = user
 		o.Pswd = pswd
 		o.Name = name
@@ -71,12 +77,22 @@ func InitQuery(sql string) DbOption {
 }
 
 func (s DbOptions) String() string {
-	u := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&interpolateParams=true&parseTime=true&loc=Local",
-		s.User,
-		s.Pswd,
-		s.Addr,
-		s.Name)
-	return u
+	if s.DBType == "mysql" {
+		u := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&interpolateParams=true&parseTime=true&loc=Local",
+			s.User,
+			s.Pswd,
+			s.Addr,
+			s.Port,
+			s.Name)
+		return u
+	} else if s.DBType == "postgres" {
+		str := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%d",
+			s.Addr, s.User, s.Name, s.Pswd, s.Port,
+		)
+		logger.DefaultLogger.Info("dbhost", str)
+		return str
+	}
+	return ""
 }
 
 type MongoOptions struct {

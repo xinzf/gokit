@@ -2,12 +2,14 @@ package storage
 
 import (
 	"errors"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/xinzf/gokit/logger"
 	"sync"
 	"time"
 )
+
+import _ "github.com/jinzhu/gorm/dialects/mysql"
+import _ "github.com/jinzhu/gorm/dialects/postgres"
 
 type database struct {
 	options    DbOptions
@@ -42,7 +44,11 @@ func (db *database) Init(opts ...DbOption) error {
 		}
 
 		var d *gorm.DB
-		d, err = gorm.Open("mysql", DB.options.String())
+		if DB.options.DBType == "mysql" {
+			d, err = gorm.Open("mysql", DB.options.String())
+		} else if DB.options.DBType == "postgres" {
+			d, err = gorm.Open("postgres", DB.options.String())
+		}
 		if err != nil {
 			return
 		}

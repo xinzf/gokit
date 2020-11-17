@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -33,6 +34,7 @@ func New(r reg.Registry) {
 
 		//r.Watch()
 		registry = r
+		_ = r.Watch(context.TODO())
 
 		var transport = &http.Transport{
 			Proxy: http.ProxyFromEnvironment,

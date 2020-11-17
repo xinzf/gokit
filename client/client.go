@@ -61,13 +61,14 @@ func New(r reg.Registry) {
 	})
 }
 
-func Call(serviceName string, body interface{}, method string, rsp interface{}, headers ...map[string]interface{}) (err error) {
+func Call(serviceName string, body interface{}, rsp interface{}, headers ...map[string]interface{}) (err error) {
 	if registry == nil {
 		return errors.New("client have not registry")
 	}
 
 	var (
 		svcName, hdlName string
+		method           = "POST"
 	)
 
 	strs := strings.Split(serviceName, ".")

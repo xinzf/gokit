@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"bytes"
 	"crypto/md5"
+	"encoding/gob"
 	"encoding/hex"
 	"fmt"
 	"net"
@@ -126,4 +128,12 @@ func MD5(str string, toUpper ...bool) string {
 		s = strings.ToUpper(s)
 	}
 	return s
+}
+
+func DeepCopy(dst, src interface{}) error {
+	var buf bytes.Buffer
+	if err := gob.NewEncoder(&buf).Encode(src); err != nil {
+		return err
+	}
+	return gob.NewDecoder(bytes.NewBuffer(buf.Bytes())).Decode(dst)
 }

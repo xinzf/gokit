@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"strings"
 )
 
 type UploadFile struct {
@@ -88,4 +89,9 @@ func (this *File) Size() int64 {
 
 func (this *File) FileName() string {
 	return this.file.Filename
+}
+
+func (this *File) GetExtension() string {
+	strs := strings.Split(this.FileName(), ".")
+	return strs[len(strs)-1]
 }

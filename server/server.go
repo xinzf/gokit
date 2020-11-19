@@ -193,7 +193,7 @@ func (this *server) call(ctx *gin.Context) {
 
 	methods, found := this.handlers[name]
 	if !found {
-		ctx.JSON(200, this.errHandler(fmt.Errorf("server: %s not found", name)))
+		ctx.JSON(200, this.errHandler(fmt.Errorf("gokit server: %s not found", name)))
 		return
 	}
 

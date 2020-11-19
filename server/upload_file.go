@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"mime/multipart"
+	"net/http"
 )
 
 type UploadFile struct {
@@ -12,8 +13,10 @@ type UploadFile struct {
 }
 
 type File struct {
-	file *multipart.FileHeader
-	ctx  *gin.Context
+	file        *multipart.FileHeader
+	ctx         *gin.Context
+	_dataReaded bool
+	_data       []byte
 }
 
 func (this *UploadFile) Get(name string) (*File, error) {
@@ -38,11 +41,26 @@ func (this *UploadFile) GetFiles(name string) []*File {
 	return f
 }
 
+func (this *File) GetMimeType() string {
+	data, err := this.RawBody()
+	if err != nil {
+		return "application/octet-stream"
+	}
+
+	return http.DetectContentType(data)
+}
+
 func (this *File) SaveFile(dst string) error {
 	return this.ctx.SaveUploadedFile(this.file, dst)
 }
 
 func (this *File) RawBody() ([]byte, error) {
+	if this._dataReaded {
+		return this._data, nil
+	}
+
+	this._dataReaded = true
+
 	f, err := this.file.Open()
 	if err != nil {
 		return nil, err
@@ -52,7 +70,12 @@ func (this *File) RawBody() ([]byte, error) {
 		_ = f.Close()
 	}()
 
-	return ioutil.ReadAll(f)
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+	this._data = data
+	return data, nil
 }
 
 func (this *File) Size() int64 {

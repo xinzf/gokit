@@ -19,6 +19,10 @@ type File struct {
 	_data       []byte
 }
 
+func (this *UploadFile) GetPostForm(name string) (string, bool) {
+	return this.ctx.GetPostForm(name)
+}
+
 func (this *UploadFile) Get(name string) (*File, error) {
 	f, err := this.ctx.FormFile(name)
 	if err != nil {

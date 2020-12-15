@@ -34,6 +34,7 @@ func New(opt ...Option) {
 
 	e := gin.New()
 	e.Use(gin.Recovery(), gin.Logger(), cors.New(config))
+	e.MaxMultipartMemory = 8 << 20 // 8 MiB
 
 	srv = &server{
 		id:       fmt.Sprintf("%s-%s-%d", hostName, opts.name, time.Now().UnixNano()),

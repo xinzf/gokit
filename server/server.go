@@ -29,7 +29,7 @@ func New(opt ...Option) {
 	opts := newOptions(opt...)
 
 	config := cors.DefaultConfig()
-	//config.AllowAllOrigins = true
+	config.AllowAllOrigins = true
 	config.AddAllowHeaders(opts.allowHeaders...)
 
 	e := gin.New()

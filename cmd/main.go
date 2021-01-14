@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/xinzf/gokit/crud"
 	"github.com/xinzf/gokit/logger"
 	"github.com/xinzf/gokit/registry"
 	"github.com/xinzf/gokit/server"
@@ -21,20 +22,33 @@ type Response struct {
 	FileName string `json:"file_name"`
 }
 
-type Handler struct {
+type User struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
-func (this *Handler) Image(ctx context.Context, req *server.UploadFile, rsp *Response) error {
-	f, err := req.Get("upfile")
-	if err != nil {
-		return err
-	}
-	if err := f.SaveFile("./haha.jpg"); err != nil {
-		return err
-	}
-	rsp.FileName = f.FileName()
+type Handler struct {
+	*crud.CRUD
+}
+
+func (this *Handler) Constructor() error {
+	this.CRUD = crud.NewCRUD(new(User))
+	this.CRUD.NewTable()
+	this.CRUD.NewForm()
 	return nil
 }
+
+//func (this *Handler) Image(ctx context.Context, req *server.UploadFile, rsp *Response) error {
+//	f, err := req.Get("upfile")
+//	if err != nil {
+//		return err
+//	}
+//	if err := f.SaveFile("./haha.jpg"); err != nil {
+//		return err
+//	}
+//	rsp.FileName = f.FileName()
+//	return nil
+//}
 
 func main() {
 	logger.DefaultLogger.Init(logger.ProjectName(PROJECT_NAME))

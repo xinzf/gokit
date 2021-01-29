@@ -27,6 +27,14 @@ type Column struct {
 
 type Columns []*Column
 
+func (static Columns) Names() []string {
+	names := make([]string, 0)
+	for _, v := range static {
+		names = append(names, v.Name)
+	}
+	return names
+}
+
 type DbTable struct {
 	tableName string
 	db        *gorm.DB
